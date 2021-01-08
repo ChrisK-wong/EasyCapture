@@ -1,0 +1,2 @@
+# EasyCapture
+Simple Snipping tool
