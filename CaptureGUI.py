@@ -14,6 +14,7 @@ class CaptureGUI:
         tk.Label(self.root, text="EasyCapture")
         self.root.resizable(False, False)
         self.settings = configs
+        self.image = image
 
         self.entry = tk.StringVar()
         self.entry2 = tk.StringVar()
@@ -22,7 +23,7 @@ class CaptureGUI:
 
         if image:
             self.image_frame = tk.Frame(self.root, padx=20, pady=5)
-            self.pic = ImageTk.PhotoImage(self.resize(image))
+            self.pic = ImageTk.PhotoImage(self.resize())
             self.image_label = tk.Label(self.image_frame, image=self.pic)
             width, height = self.image.size
             self.image_res = tk.Label(self.image_frame, text="{} x {}".format(width, height))
@@ -38,7 +39,7 @@ class CaptureGUI:
         self.frame.grid(row=1, column=0, sticky="W", padx=20)
 
         if image:
-            self.SaveButton = tk.Button(self.frame, text="Save", padx=40, pady=10, command=self.save)
+            self.SaveButton = tk.Button(self.frame, text="Save", padx=40, pady=10, command=self.save_pic)
             self.SaveButton.grid(row=0, column=0, padx=20, pady=10)
 
         self.NewButton = tk.Button(self.frame, text="New", padx=40, pady=10, command=self.new)
@@ -71,8 +72,7 @@ class CaptureGUI:
         self.root.mainloop()
 
 
-    def resize(self, image):
-        self.image = image
+    def resize(self):
         width, height = self.image.size
         if width > 500 or height > 500:
             if width >= height:
@@ -93,11 +93,11 @@ class CaptureGUI:
             configs = json.load(f)
         CaptureScreen.Capture(configs, False)
 
-    def save(self):
+    def save_pic(self):
         save_name = self.save_name.get()
         if self.settings['folder'] == '':
             self.browse()
-        save(ImageGrab.grab(), save_name)
+        save(self.image, save_name)
 
     def show_advanced(self):
         self.AdvancedButton.configure(bg="gray70")
@@ -170,4 +170,3 @@ class CaptureGUI:
         count = int(self.AC_count.get())
         self.root.destroy()
         CaptureScreen.Capture(configs, ac=True, ac_delay=delay, ac_count=count)
-
